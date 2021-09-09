@@ -1,0 +1,37 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  #____________________________________________________________________________
+  #---------------------------------- Stage -----------------------------------
+  #____________________________________________________________________________
+
+  deploy-stg:
+    name: Deploy | Stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Authenticate to AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.CICDFARGATE_DEVELOPER_ACESSKEY}}
+          aws-secret-access-key: ${{secrets.CICDFARGATE_DEVELOPER_SECRETKEY}}
+          aws-region: sa-east-1
+
+      - name: Build Docker image
+        run: docker build -t 496540338877.dkr.ecr.sa-east-1.amazonaws.com/vxapi-aws-kms-api-stg:latest -f Dockerfile .
+
+      - name: Push image to ECR
+        run: |
+          aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin 496540338877.dkr.ecr.sa-east-1.amazonaws.com
+          docker push 496540338877.dkr.ecr.sa-east-1.amazonaws.com/vxapi-aws-kms-api-stg:latest
+
+      - name: Update service
+        run: aws ecs update-service --cluster vxapi-aws-kms-api-stg --service svc-vxapi-aws-kms-api-stg --force-new-deployment
