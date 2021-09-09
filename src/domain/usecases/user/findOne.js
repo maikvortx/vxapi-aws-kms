@@ -1,0 +1,26 @@
+const { usecase, step, Ok } = require('@herbsjs/herbs')
+const { User } = require('../../entities')
+const { NotFoundError } = require('../../errors')
+
+const useCase = ({ userRepository }) => () =>
+  usecase('Find one User', {
+    // Input/Request metadata and validation 
+    request: {
+      id: Number,
+    },
+
+    // Output/Response metadata
+    response: User,
+
+    //Authorization with Audit
+    authorize: () => Ok(),
+
+    'Find User by id': step(async ctx => {
+      // ctx.ret is the Use Case return
+      const [result] = await userRepository.findByID(parseInt(ctx.req.id))
+      if (!result) return NotFoundError('User', `User entity not found by id: ${ctx.req.id}`)
+      return (ctx.ret = User.fromJSON(result))
+    })
+  })
+
+module.exports = useCase

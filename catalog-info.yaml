@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vxapi-boilerplate
+  description: "Esse projeto é um template dos backends usados na vortx, a ideia é que ele seja um ponto de partida para que você possa construir suas aplicações no mesmo padrão da maioria dos projetos desenvolvidos internamente, com logger, autenticação, herbs e muito mais já configurado."
+  tags:
+    - nodejs
+    - herbs
+  links:
+    - url: https://docs.vortx.com.br/docs/squads/303/produtos/vxboilerplate/boilerplate-backend
+      title: Doc
+      icon: dashboard
+  annotations:
+    github.com/project-slug: vortx-dtvm/vxapi-boilerplate
+spec:
+  type: Back-End
+  lifecycle: production
+  owner: "303"
+  system: boilerplate
+  consumesApis:
+    - VxLoginUnico.API
