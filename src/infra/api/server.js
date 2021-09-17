@@ -3,10 +3,10 @@ const graphql = require('./graphql')
 const rest = require('./rest')
 const { logger } = require('../../libs')
 
-async function start (config) {
+async function start(config) {
   const app = express()
 
-  rest(app, config)
+  await rest(app, config)
   graphql(app, config)
 
   return app.listen(

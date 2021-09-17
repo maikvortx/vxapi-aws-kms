@@ -15,8 +15,8 @@ function prepareUsecases(usecases) {
     }))
 }
 
-function prepareRoutes(config) {
-    const conn = db.factory(config)
+async function prepareRoutes(config) {
+    const conn = await db.factory(config)
     const repositories = repositoriesFactory(conn)
 
     const routes = [
@@ -31,14 +31,14 @@ function prepareRoutes(config) {
     return routes
 }
 
-module.exports = (app, config) => {
+module.exports = async (app, config) => {
     app.use(json({ limit: '50mb' }))
     app.use(cors())
 
     const router = new express.Router()
 
     const verbose = !config.isProd
-    const routes = prepareRoutes(config)
+    const routes = await prepareRoutes(config)
     generateRoutes(routes, router, verbose)
     app.use(router)
 
