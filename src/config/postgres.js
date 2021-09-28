@@ -1,11 +1,15 @@
-require('dotenv').config()
+const secretsManager = require('./secrets').SecretsManager
 
-module.exports = {
-  client: process.env.DB_CLIENT || 'pg',
-  connection: {
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.DB_DATABASE || 'todolist_on_herbs_db'
+module.exports = async () => {
+  const dbSecrets = await secretsManager.getDBSecrets()
+
+  return {
+    client: dbSecrets.client || 'pg',
+    connection: {
+      host: dbSecrets.host || '127.0.0.1',
+      user: dbSecrets.user || 'postgres',
+      password: dbSecrets.password || 'postgres',
+      database: dbSecrets.database || 'todolist_on_herbs_db'
+    }
   }
 }
